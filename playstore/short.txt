@@ -1,0 +1,1 @@
+A timer dedicated for dance battle events.

@@ -1,0 +1,1 @@
+BattleStop is a timer created specifically for dance events. It allows one to reset the time without having to start/stop watch the timer. Useful for 1vs1, 2vs2, 7-to-smoke battles.

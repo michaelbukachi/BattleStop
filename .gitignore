@@ -7,3 +7,5 @@
 .externalNativeBuild
 .cxx
 local.properties
+battlestop.jks
+keystore.properties
