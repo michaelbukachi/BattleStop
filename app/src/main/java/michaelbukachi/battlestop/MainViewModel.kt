@@ -3,12 +3,9 @@ package michaelbukachi.battlestop
 import android.text.format.DateUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
@@ -18,7 +15,7 @@ data class CountDownUi(
     val paused: Boolean = false,
 )
 
-class MainViewModel : ViewModel() {
+class MainViewModel(val dispatcher: CoroutineDispatcher = Dispatchers.Default) : ViewModel() {
 
     private var timeInSeconds = 0L
     private var current = AtomicLong(0L)
@@ -40,12 +37,12 @@ class MainViewModel : ViewModel() {
     private fun startTimer() {
         job?.cancel()
         current.set(timeInSeconds)
-        job = viewModelScope.launch(Dispatchers.Default) {
+        job = viewModelScope.launch {
             countdown()
         }
     }
 
-    private suspend fun countdown() {
+    private suspend fun countdown() = withContext(dispatcher) {
         updatePausedState(false)
         running.set(true)
         while (true) {
