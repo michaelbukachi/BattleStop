@@ -50,7 +50,7 @@ class MainViewModel : ViewModel() {
         running.set(true)
         while (true) {
             if (!paused.get()) {
-                if (current.getAndDecrement() == 0L) {
+                if (current.decrementAndGet() < 0L) {
                     break
                 }
                 uiState.update {
