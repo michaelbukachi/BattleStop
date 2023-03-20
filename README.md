@@ -4,9 +4,7 @@ A simple timer that can be easily used in dance battles.
 
 Screens:
 
-![](screenshots/settings.png)
-![](screenshots/running.png)
-![](screenshots/paused.png)
+<img src="screenshots/settings.png" alt="Settings" width="240" height="320">
 
 
 ##### Libraries
