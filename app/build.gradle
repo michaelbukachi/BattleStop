@@ -5,14 +5,15 @@ plugins {
 
 android {
     namespace 'michaelbukachi.battlestop'
-    compileSdk 33
+    compileSdk = 33
 
     defaultConfig {
         applicationId "michaelbukachi.battlestop"
-        minSdk 21
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        minSdk = 21
+        targetSdk = 33
+        versionCode = 1
+        versionName = "1.0.0"
+        archivesBaseName = "BattleStop-$versionName"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
