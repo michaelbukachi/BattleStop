@@ -1,5 +1,8 @@
 package michaelbukachi.battlestop
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -90,12 +93,16 @@ fun TimeDisplayText(text: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun CountDown(model: CountDownUi, modifier: Modifier = Modifier) {
+    val progressAnimate by animateFloatAsState(
+        targetValue = model.progress,
+        animationSpec = tween(durationMillis = 1000, easing = LinearEasing),
+    )
     Box(contentAlignment = Alignment.Center, modifier = modifier) {
         Text(
             model.text,
             fontSize = 64.sp,
         )
-        CircularProgressIndicator(progress = model.progress, modifier = Modifier.size(256.dp))
+        CircularProgressIndicator(progress = progressAnimate, modifier = Modifier.size(256.dp))
     }
 }
 
