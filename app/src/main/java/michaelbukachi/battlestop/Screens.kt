@@ -1,5 +1,6 @@
 package michaelbukachi.battlestop
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -119,93 +120,98 @@ fun MainScreen(mainViewModel: () -> MainViewModel?) {
             .fillMaxSize()
             .padding(top = 20.dp),
     ) {
-        if (settingsOpen) {
-            TimeDisplayText(text = timeText, modifier = Modifier.padding(bottom = 16.dp))
-            KeyboardWidget(onKeyPressed = {
-                if (it != "BACKSPACE") {
-                    if (timeText.length < 6) {
-                        timeText += it
+        AnimatedVisibility(visible = settingsOpen) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,) {
+                TimeDisplayText(text = timeText, modifier = Modifier.padding(bottom = 16.dp))
+                KeyboardWidget(onKeyPressed = {
+                    if (it != "BACKSPACE") {
+                        if (timeText.length < 6) {
+                            timeText += it
+                        }
+                    } else {
+                        if (timeText.isNotEmpty()) {
+                            timeText = timeText.substring(0, timeText.lastIndex)
+                        }
                     }
-                } else {
-                    if (timeText.isNotEmpty()) {
-                        timeText = timeText.substring(0, timeText.lastIndex)
-                    }
-                }
-            }, modifier = Modifier.fillMaxWidth(0.8f))
-            Spacer(modifier = Modifier.height(20.dp))
-            OutlinedButton(
-                modifier = Modifier.size(80.dp),
-                shape = CircleShape,
-                border = BorderStroke(1.dp, MainColor),
-                contentPadding = PaddingValues(0.dp),
-                onClick = {
-                    mainViewModel()?.setAndStartTimer(timeText)
-                    settingsOpen = false
-                },
-            ) {
-                Icon(
-                    Icons.Default.PlayArrow,
-                    contentDescription = "start countdown",
-                )
-            }
-        } else {
-            CountDown(
-                model = uiState?.value ?: CountDownUi(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.4f),
-            )
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp),
-            ) {
+                }, modifier = Modifier.fillMaxWidth(0.8f))
+                Spacer(modifier = Modifier.height(20.dp))
                 OutlinedButton(
                     modifier = Modifier.size(80.dp),
                     shape = CircleShape,
                     border = BorderStroke(1.dp, MainColor),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
-                        mainViewModel()?.reset()
+                        mainViewModel()?.setAndStartTimer(timeText)
+                        settingsOpen = false
                     },
                 ) {
                     Icon(
-                        Icons.Default.Refresh,
-                        contentDescription = "reset timer",
+                        Icons.Default.PlayArrow,
+                        contentDescription = "start countdown",
                     )
                 }
-                Box {
-                    val logoPainter = rememberAsyncImagePainter(
-                        R.drawable.logo,
-                        imageLoader = imageLoader,
-                    )
-
-                    Image(
-                        logoPainter,
-                        contentDescription = "logo",
-                        modifier = Modifier.size(160.dp),
-                        contentScale = ContentScale.FillBounds,
-                    )
-                }
-                OutlinedButton(
-                    modifier = Modifier.size(80.dp),
-                    shape = CircleShape,
-                    border = BorderStroke(1.dp, MainColor),
-                    contentPadding = PaddingValues(0.dp),
-                    onClick = {
-                        mainViewModel()?.pauseTimer()
-                    },
+            }
+        }
+        AnimatedVisibility(visible = !settingsOpen) {
+            Column {
+                CountDown(
+                    model = uiState?.value ?: CountDownUi(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.4f),
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).padding(top = 20.dp),
                 ) {
-                    if (uiState?.value?.paused == true) {
+                    OutlinedButton(
+                        modifier = Modifier.size(80.dp),
+                        shape = CircleShape,
+                        border = BorderStroke(1.dp, MainColor),
+                        contentPadding = PaddingValues(0.dp),
+                        onClick = {
+                            mainViewModel()?.reset()
+                        },
+                    ) {
                         Icon(
-                            Icons.Default.PlayArrow,
-                            contentDescription = "resume countdown",
+                            Icons.Default.Refresh,
+                            contentDescription = "reset timer",
                         )
-                    } else {
-                        Icon(
-                            painterResource(id = R.drawable.pause),
-                            contentDescription = "pause countdown",
+                    }
+                    Box {
+                        val logoPainter = rememberAsyncImagePainter(
+                            R.drawable.logo,
+                            imageLoader = imageLoader,
                         )
+
+                        Image(
+                            logoPainter,
+                            contentDescription = "logo",
+                            modifier = Modifier.size(160.dp),
+                            contentScale = ContentScale.FillBounds,
+                        )
+                    }
+                    OutlinedButton(
+                        modifier = Modifier.size(80.dp),
+                        shape = CircleShape,
+                        border = BorderStroke(1.dp, MainColor),
+                        contentPadding = PaddingValues(0.dp),
+                        onClick = {
+                            mainViewModel()?.pauseTimer()
+                        },
+                    ) {
+                        if (uiState?.value?.paused == true) {
+                            Icon(
+                                Icons.Default.PlayArrow,
+                                contentDescription = "resume countdown",
+                            )
+                        } else {
+                            Icon(
+                                painterResource(id = R.drawable.pause),
+                                contentDescription = "pause countdown",
+                            )
+                        }
                     }
                 }
             }
