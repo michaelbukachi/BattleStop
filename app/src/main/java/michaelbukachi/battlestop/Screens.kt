@@ -1,5 +1,7 @@
 package michaelbukachi.battlestop
 
+import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -108,11 +110,25 @@ fun CountDown(model: CountDownUi, modifier: Modifier = Modifier) {
 }
 
 @Composable
+fun KeepScreenOn() {
+    val context = LocalContext.current
+    DisposableEffect(Unit) {
+        val window = (context as Activity).window
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+}
+
+@Composable
 fun MainScreen(mainViewModel: () -> MainViewModel?) {
     val imageLoader = LocalContext.current.imageLoader
     var settingsOpen by remember { mutableStateOf(true) }
     var timeText by remember { mutableStateOf("0") }
     val uiState = mainViewModel()?.uiState?.collectAsState()
+
+    KeepScreenOn()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -121,7 +137,7 @@ fun MainScreen(mainViewModel: () -> MainViewModel?) {
             .padding(top = 20.dp),
     ) {
         AnimatedVisibility(visible = settingsOpen) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 TimeDisplayText(text = timeText, modifier = Modifier.padding(bottom = 16.dp))
                 KeyboardWidget(onKeyPressed = {
                     if (it != "BACKSPACE") {
